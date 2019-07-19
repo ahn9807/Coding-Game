@@ -68,7 +68,7 @@ public enum RegisterIndex
     of = 0xB,
 }
 
-public enum Mode
+public enum CPUMode
 {
     RegisterToRegister = 0x1,
     RegisterToMemory = 0x2,
@@ -105,18 +105,24 @@ public class Error
 
     public bool IsError()
     {
-        if (cpuError != CPUError.NotDefinedMachineCode &&
+        if (cpuError != CPUError.Nothing &&
            memoryError != MemoryError.Nothing)
             return true;
 
         return false;
+    }
+
+    public void Clear()
+    {
+        cpuError = CPUError.Nothing;
+        memoryError = MemoryError.Nothing;
     }
 }
 
 public class MachineCode
 {
     public Instructions instruction;
-    public Mode mode;
+    public CPUMode mode;
     public RegisterIndex sourceRegister;
     public RegisterIndex destRegister;
     public int sourceMemoryIndex;
@@ -135,10 +141,10 @@ public class MachineCode
     {
         switch (mode)
         {
-            case Mode.MemoryToRegister:
-            case Mode.RegisterToRegister:
-            case Mode.RegisterOnly:
-            case Mode.NumberToRegister:
+            case CPUMode.MemoryToRegister:
+            case CPUMode.RegisterToRegister:
+            case CPUMode.RegisterOnly:
+            case CPUMode.NumberToRegister:
                 switch (destRegister)
                 {
                     case RegisterIndex.ax:
@@ -173,10 +179,10 @@ public class MachineCode
                         break;
                 }
                 break;
-            case Mode.MemoryToMemory:
-            case Mode.RegisterToMemory:
-            case Mode.MemoryOnly:
-            case Mode.NumberToMemory:
+            case CPUMode.MemoryToMemory:
+            case CPUMode.RegisterToMemory:
+            case CPUMode.MemoryOnly:
+            case CPUMode.NumberToMemory:
                 if(isSourceMemoryIndexIsRegister)
                 {
                     GetDataSource(register, memory, ref sourceMemoryIndex, error);
@@ -197,10 +203,10 @@ public class MachineCode
     {
         switch (mode)
         {
-            case Mode.MemoryToRegister:
-            case Mode.RegisterToRegister:
-            case Mode.RegisterOnly:
-            case Mode.NumberToRegister:
+            case CPUMode.MemoryToRegister:
+            case CPUMode.RegisterToRegister:
+            case CPUMode.RegisterOnly:
+            case CPUMode.NumberToRegister:
                 switch (destRegister)
                 {
                     case RegisterIndex.ax:
@@ -235,10 +241,10 @@ public class MachineCode
                         break;
                 }
                 break;
-            case Mode.MemoryToMemory:
-            case Mode.RegisterToMemory:
-            case Mode.MemoryOnly:
-            case Mode.NumberToMemory:
+            case CPUMode.MemoryToMemory:
+            case CPUMode.RegisterToMemory:
+            case CPUMode.MemoryOnly:
+            case CPUMode.NumberToMemory:
                 if (isSourceMemoryIndexIsRegister)
                 {
                     GetDataSource(register, memory, ref sourceMemoryIndex, error);
@@ -249,9 +255,9 @@ public class MachineCode
                 }
                 returnVal = memory.GetData(sourceMemoryIndex, error);
                 break;
-            case Mode.NumberOnly:
-            case Mode.RegisterToNumber:
-            case Mode.MemoryToNumber:
+            case CPUMode.NumberOnly:
+            case CPUMode.RegisterToNumber:
+            case CPUMode.MemoryToNumber:
                 returnVal = value;
                 break;
             default:
@@ -265,9 +271,9 @@ public class MachineCode
     {
         switch (mode)
         {
-            case Mode.RegisterOnly:
-            case Mode.RegisterToMemory:
-            case Mode.RegisterToRegister:
+            case CPUMode.RegisterOnly:
+            case CPUMode.RegisterToMemory:
+            case CPUMode.RegisterToRegister:
                 switch (destRegister)
                 {
                     case RegisterIndex.ax:
@@ -302,14 +308,14 @@ public class MachineCode
                         break;
                 }
                 break;
-            case Mode.MemoryToRegister:
-            case Mode.MemoryToMemory:
-            case Mode.MemoryOnly:
+            case CPUMode.MemoryToRegister:
+            case CPUMode.MemoryToMemory:
+            case CPUMode.MemoryOnly:
                 returnVal = memory.GetData(sourceMemoryIndex, error);
                 break;
-            case Mode.NumberToMemory:
-            case Mode.NumberToRegister:
-            case Mode.NumberOnly:
+            case CPUMode.NumberToMemory:
+            case CPUMode.NumberToRegister:
+            case CPUMode.NumberOnly:
                 returnVal = value;
                 break;
             default:

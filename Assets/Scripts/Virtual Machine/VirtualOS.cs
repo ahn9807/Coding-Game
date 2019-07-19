@@ -18,9 +18,6 @@ public class VirtualOS : MonoBehaviour
     public void Start()
     {
         StartOS();
-        CompilePrograme(testString);
-        SetPrograme(machineCodes);
-        ExecutePrograme();
     }
 
     public void StartOS()
@@ -35,16 +32,23 @@ public class VirtualOS : MonoBehaviour
         hardware.SetMachineCode(machineCodes);
     }
 
+    public void SetPrograme()
+    {
+        hardware.SetMachineCode(machineCodes);
+    }
+
     public bool CompilePrograme(string rawData)
     {
-        isCompiled = true;
-        return compiler.Compile(rawData, ref machineCodes, ref errorLine);
+        isCompiled = compiler.Compile(rawData, ref machineCodes, ref errorLine);
+        return isCompiled;
     }
 
     public void ExecutePrograme()
     {
         if(!isCompiled)
         {
+            Debug.Log("Not Compiled yet");
+            error.cpuError = CPUError.NotDefinedMachineCode;
             return;
         }
         hardware.StartProcessing();
@@ -54,6 +58,11 @@ public class VirtualOS : MonoBehaviour
             Debug.Log(error.cpuError);
             Debug.Log(error.memoryError);
         }
+    }
+
+    public int AccessMemory(int index)
+    {
+        return hardware.AccessMemory(index);
     }
 
     public void EndOS()

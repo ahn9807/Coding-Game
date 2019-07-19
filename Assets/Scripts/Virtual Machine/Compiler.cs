@@ -9,12 +9,16 @@ public class Compiler
 
     public bool Compile(string rawData, ref List<MachineCode> mc, ref int errorLine)
     {
+        error.Clear();
+
         List<MachineCode> machineCodes = new List<MachineCode>();
-        //string[] inputStringsByLine = rawData.Split(Environment.NewLine.ToCharArray());
-        string[] inputStringsByLine = rawData.Split('|');
+        string[] inputStringsByLine = rawData.Split(Environment.NewLine.ToCharArray());
 
         int index = 0;
         machineCodes.Capacity = inputStringsByLine.Length;
+
+        Debug.Log(rawData);
+        Debug.Log(inputStringsByLine.Length);
 
         while (index < inputStringsByLine.Length)
         {
@@ -41,7 +45,7 @@ public class Compiler
 
             if(error.IsError())
             {
-                Debug.Log("Compiler Error Line:" + index);
+                Debug.Log("Compile Error Line:" + index);
                 errorLine = index;
                 mc = null;
                 return false;
@@ -65,75 +69,75 @@ public class Compiler
 
         if (type1 == CompileType.Register && type2 == CompileType.Register)
         {
-            mc.mode = Mode.RegisterToRegister;
+            mc.mode = CPUMode.RegisterToRegister;
             mc.sourceRegister = GetRegisterIndex(input1);
             mc.destRegister = GetRegisterIndex(input2);
         }
         else if (type1 == CompileType.Register && type2 == CompileType.Memory)
         {
-            mc.mode = Mode.RegisterToMemory;
+            mc.mode = CPUMode.RegisterToMemory;
             mc.sourceRegister = GetRegisterIndex(input1);
             SetMemoryIndex(mc, input2, false);
 
         }
         else if(type1 == CompileType.Register && type2 == CompileType.Number)
         {
-            mc.mode = Mode.RegisterToNumber;
+            mc.mode = CPUMode.RegisterToNumber;
             mc.sourceRegister = GetRegisterIndex(input1);
             mc.value = GetValue(input2);
         }
         else if(type1 == CompileType.Memory && type2 == CompileType.Number)
         {
-            mc.mode = Mode.MemoryToNumber;
+            mc.mode = CPUMode.MemoryToNumber;
             SetMemoryIndex(mc, input1, true);
         }
         else if (type1 == CompileType.Memory && type2 == CompileType.Register)
         {
-            mc.mode = Mode.MemoryToRegister;
+            mc.mode = CPUMode.MemoryToRegister;
             mc.destRegister = GetRegisterIndex(input2);
             SetMemoryIndex(mc, input1, true);
         }
         else if (type1 == CompileType.Memory && type2 == CompileType.Memory)
         {
-            mc.mode = Mode.MemoryToMemory;
+            mc.mode = CPUMode.MemoryToMemory;
             SetMemoryIndex(mc, input1, true);
             SetMemoryIndex(mc, input2, false);
         }
         else if (type1 == CompileType.Memory && type2 == CompileType.Noting)
         {
-            mc.mode = Mode.MemoryOnly;
+            mc.mode = CPUMode.MemoryOnly;
             SetMemoryIndex(mc, input1, true);
         }
         else if (type1 == CompileType.Register && type2 == CompileType.Noting)
         {
-            mc.mode = Mode.RegisterOnly;
+            mc.mode = CPUMode.RegisterOnly;
             mc.sourceRegister = GetRegisterIndex(input1);
         }
         else if (type1 == CompileType.Number && type2 == CompileType.Register)
         {
-            mc.mode = Mode.NumberToRegister;
+            mc.mode = CPUMode.NumberToRegister;
             mc.value = GetValue(input1);
             mc.destRegister = GetRegisterIndex(input2);
         }
         else if (type1 == CompileType.Number && type2 == CompileType.Memory)
         {
-            mc.mode = Mode.NumberToMemory;
+            mc.mode = CPUMode.NumberToMemory;
             mc.value = GetValue(input1);
             SetMemoryIndex(mc, input2, false);
         }
         else if (type1 == CompileType.Number && type2 == CompileType.Noting)
         {
-            mc.mode = Mode.NumberOnly;
+            mc.mode = CPUMode.NumberOnly;
             mc.value = GetValue(input1);
         }
         else if (type1 == CompileType.Noting && type2 == CompileType.Noting)
         {
-            mc.mode = Mode.Noting;
+            mc.mode = CPUMode.Noting;
         }
         else
         {
             error.SetModeError = true;
-            mc.mode = Mode.Noting;
+            mc.mode = CPUMode.Noting;
         }
     }
 
@@ -144,7 +148,7 @@ public class Compiler
             return CompileType.Noting;
         }
 
-        if(input.Contains("M"))
+        if(input.Contains("M") || input.Contains("m"))
         {
             return CompileType.Memory;
         }
@@ -181,7 +185,7 @@ public class Compiler
         string subString = "";
         for(int i=0;i<subChar.Length;i++)
         {
-            if(subChar[i] != 'M' && subChar[i] != ']' && subChar[i] != '[')
+            if(subChar[i] != 'm' && subChar[i] != 'M' && subChar[i] != ']' && subChar[i] != '[')
             {
                 subString += subChar[i];
             }
@@ -250,6 +254,15 @@ public struct CompileError
                InvalidMemoryFormat |
                InvaildNumberFormat |
                SetModeError;
+    }
+
+    public void Clear()
+    {
+        NotDefinedInstruction = false;
+        NotDefinedRegister = false;
+        InvaildNumberFormat = false;
+        InvaildNumberFormat = false;
+        SetModeError = false;
     }
 }
 

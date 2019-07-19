@@ -23,7 +23,7 @@ public class VirtualMemory
         }
 
         memory[index] = data;
-    }
+    }   
 
     public int GetData(int index, Error error)
     {

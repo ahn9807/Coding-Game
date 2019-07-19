@@ -13,6 +13,11 @@ public class VirtualHardware : MonoBehaviour
     Register register;
     List<MachineCode> machineCodes;
 
+    public int AccessMemory(int index)
+    {
+        return memory.GetData(index, error);
+    }
+
     public void SetVirtualHarware(Error error)
     {
         memory = new VirtualMemory(memoryCapacity);
@@ -33,8 +38,10 @@ public class VirtualHardware : MonoBehaviour
         if (machineCodes == null)
         {
             error.cpuError = CPUError.NotDefinedMachineCode;
+            Debug.Log("SDF");
             return;
         }
+
         StartCoroutine("IEClock");
     }
 
