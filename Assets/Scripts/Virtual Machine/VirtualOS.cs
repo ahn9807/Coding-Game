@@ -2,29 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(VirtualHardware))]
 public class VirtualOS : MonoBehaviour
 {
     //public
-    public string testString;
     public int errorLine;
-    public VirtualHardware hardware;
+    public int clockSpeed;
+    public int memoryCapacity;
 
     //private
+    VirtualHardware hardware;
     List<MachineCode> machineCodes;
     Compiler compiler;
     Error error;
     bool isCompiled;
 
-    public void Start()
-    {
-        StartOS();
-    }
-
-    public void StartOS()
+    public void Awake()
     {
         error = new Error();
-        hardware.SetVirtualHarware(error);
+        hardware = GetComponent<VirtualHardware>();
         compiler = new Compiler();
+    }
+
+    public void Start()
+    {
+        hardware.memoryCapacity = memoryCapacity;
+        hardware.clockSpeed = clockSpeed;
+        hardware.SetVirtualHarware(error);
+    }
+
+    public VirtualHardware GetHardware()
+    {
+        return hardware;
     }
 
     public void SetPrograme(List<MachineCode> machineCodes)
@@ -39,12 +48,14 @@ public class VirtualOS : MonoBehaviour
 
     public bool CompilePrograme(string rawData)
     {
+        compiler.Clear();
         isCompiled = compiler.Compile(rawData, ref machineCodes, ref errorLine);
         return isCompiled;
     }
 
     public void ExecutePrograme()
     {
+        hardware.clockSpeed = clockSpeed;
         if(!isCompiled)
         {
             Debug.Log("Not Compiled yet");
@@ -58,6 +69,11 @@ public class VirtualOS : MonoBehaviour
             Debug.Log(error.cpuError);
             Debug.Log(error.memoryError);
         }
+    }
+
+    public void StopExecute()
+    {
+        hardware.Clear();
     }
 
     public int AccessMemory(int index)

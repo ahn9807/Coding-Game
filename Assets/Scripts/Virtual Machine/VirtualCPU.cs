@@ -36,6 +36,11 @@ public class VirtualCPU
         this.machineCodes = machineCodes;
     }
 
+    public void Clear()
+    {
+        isRun = false;
+    }
+
     public bool IsRun()
     {
         return isRun;
@@ -44,8 +49,6 @@ public class VirtualCPU
     public void Start()
     {
         isRun = true;
-        register.ip = 0;
-        register.sp = 0;
     }
 
     public void InstructionPerClock()
@@ -63,6 +66,7 @@ public class VirtualCPU
         {
             Debug.Log("CPU Error");
             error.cpuError = CPUError.IndexOutOfRangeFromInstructions;
+            isRun = false;
             return;
         }
 
@@ -226,6 +230,7 @@ public class VirtualCPU
                 break;
             default:
                 error.cpuError = CPUError.NotDefinedMachineCode;
+                isRun = false;
                 break;
         }
 

@@ -35,6 +35,8 @@ public class VirtualHardware : MonoBehaviour
 
     public void StartProcessing()
     {
+        Clear();
+
         if (machineCodes == null)
         {
             error.cpuError = CPUError.NotDefinedMachineCode;
@@ -48,6 +50,15 @@ public class VirtualHardware : MonoBehaviour
     public void StopProcessing()
     {
         StopAllCoroutines();
+    }
+
+    public void Clear()
+    {
+        StopProcessing();
+        cpu.Clear();
+        memory.Clear();
+        register.Clear();
+        error.Clear();
     }
 
     IEnumerator IEClock()

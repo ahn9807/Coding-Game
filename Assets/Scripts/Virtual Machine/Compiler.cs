@@ -7,6 +7,8 @@ public class Compiler
 {
     public CompileError error;
 
+    bool endContained;
+
     public bool Compile(string rawData, ref List<MachineCode> mc, ref int errorLine)
     {
         error.Clear();
@@ -21,19 +23,28 @@ public class Compiler
         Debug.Log(inputStringsByLine.Length);
 
         while (index < inputStringsByLine.Length)
-        {
+        { 
+            int commentIndex = inputStringsByLine[index].IndexOf("//");
+            if (commentIndex > 0)
+                inputStringsByLine[index] = inputStringsByLine[index].Substring(0, commentIndex);
+             
+
             string[] subStrings = inputStringsByLine[index].Split(' ');
             string s1 = "", s2 = "", s3 = "";
             if (subStrings.Length == 1)
             {
                 s1 = subStrings[0];
+                if (s1 == "END")
+                    endContained = true;
+                if (s1 == "")
+                    continue;
             }
-            if(subStrings.Length == 2)
+            else if(subStrings.Length == 2)
             {
                 s1 = subStrings[0];
                 s2 = subStrings[1];
             }
-            if(subStrings.Length == 3)
+            else 
             {
                 s1 = subStrings[0];
                 s2 = subStrings[1];
@@ -43,6 +54,7 @@ public class Compiler
             machineCodes.Add(new MachineCode());
             SetMachineCode(machineCodes[index], s1, s2, s3);
 
+            
             if(error.IsError())
             {
                 Debug.Log("Compile Error Line:" + index);
@@ -50,8 +62,20 @@ public class Compiler
                 mc = null;
                 return false;
             }
+            
             index++;
         }
+
+        /*
+        if(endContained == false)
+        {
+            Debug.Log("Compile Error");
+            error.NotContainEND = true;
+            errorLine = -1;
+            mc = null;
+            return false;
+        }
+        */
 
         errorLine = -1;
         mc = machineCodes;
@@ -237,6 +261,11 @@ public class Compiler
 
         return returnVal;
     }
+
+    public void Clear()
+    {
+        error.Clear();
+    }
 }
 
 public struct CompileError
@@ -246,6 +275,7 @@ public struct CompileError
     public bool InvalidMemoryFormat;
     public bool InvaildNumberFormat;
     public bool SetModeError;
+    public bool NotContainEND;
 
     public bool IsError()
     {
@@ -253,6 +283,7 @@ public struct CompileError
                NotDefinedRegister |
                InvalidMemoryFormat |
                InvaildNumberFormat |
+               NotContainEND |
                SetModeError;
     }
 
@@ -263,6 +294,7 @@ public struct CompileError
         InvaildNumberFormat = false;
         InvaildNumberFormat = false;
         SetModeError = false;
+        NotContainEND = false;
     }
 }
 

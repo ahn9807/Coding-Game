@@ -50,23 +50,39 @@ public class Register
         sf |= t < 0;
         of |= ((a < 0) == (b < 0)) && ((t < 0) != (a < 0));
     }
+
+    public void Clear()
+    {
+        ax = 0;
+        bx = 0;
+        cx = 0;
+        dx = 0;
+        si = 0;
+        di = 0;
+        bp = 0;
+        sp = 0;
+        ip = 0;
+        zf = false;
+        sf = false;
+        of = false;
+    }
 }
 
-public enum RegisterIndex
-{
-    ax = 0x0,
-    bx = 0x1,
-    cx = 0x2,
-    dx = 0x3,
-    si = 0x4,
-    di = 0x5,
-    bp = 0x6,
-    sp = 0x7,
-    ip = 0x8,
-    zf = 0x9,
-    sf = 0xA,
-    of = 0xB,
-}
+    public enum RegisterIndex
+    {
+        ax = 0x0,
+        bx = 0x1,
+        cx = 0x2,
+        dx = 0x3,
+        si = 0x4,
+        di = 0x5,
+        bp = 0x6,
+        sp = 0x7,
+        ip = 0x8,
+        zf = 0x9,
+        sf = 0xA,
+        of = 0xB,
+    }
 
 public enum CPUMode
 {
@@ -183,15 +199,43 @@ public class MachineCode
             case CPUMode.RegisterToMemory:
             case CPUMode.MemoryOnly:
             case CPUMode.NumberToMemory:
-                if(isSourceMemoryIndexIsRegister)
-                {
-                    GetDataSource(register, memory, ref sourceMemoryIndex, error);
-                }
                 if(isDestMemoryIndexIsRegister)
                 {
-                    GetDataDest(register, memory, ref destMemoryIndex, error);
+                    switch (destRegister)
+                    {
+                        case RegisterIndex.ax:
+                            destMemoryIndex = register.ax;
+                            break;
+                        case RegisterIndex.bx:
+                            destMemoryIndex = register.bx;
+                            break;
+                        case RegisterIndex.cx:
+                            destMemoryIndex = register.cx;
+                            break;
+                        case RegisterIndex.dx:
+                            destMemoryIndex = register.dx;
+                            break;
+                        case RegisterIndex.si:
+                            destMemoryIndex = register.si;
+                            break;
+                        case RegisterIndex.di:
+                            destMemoryIndex = register.di;
+                            break;
+                        case RegisterIndex.bp:
+                            destMemoryIndex = register.bp;
+                            break;
+                        case RegisterIndex.sp:
+                            destMemoryIndex = register.sp;
+                            break;
+                        case RegisterIndex.ip:
+                            destMemoryIndex = register.ip;
+                            break;
+                        default:
+                            error.cpuError = CPUError.NotDefinedRegisterError;
+                            break;
+                    }
                 }
-                memory.SetData(destMemoryIndex, value, error);
+                    memory.SetData(destMemoryIndex, value, error);
                 break;
             default:
                 error.cpuError = CPUError.NotDefinedRegisterError;
@@ -213,28 +257,28 @@ public class MachineCode
                         returnVal = register.ax;
                         break;
                     case RegisterIndex.bx:
-                        returnVal = register.ax;
+                        returnVal = register.bx;
                         break;
                     case RegisterIndex.cx:
-                        returnVal = register.ax;
+                        returnVal = register.cx;
                         break;
                     case RegisterIndex.dx:
-                        returnVal = register.ax;
+                        returnVal = register.dx;
                         break;
                     case RegisterIndex.si:
-                        returnVal = register.ax;
+                        returnVal = register.si;
                         break;
                     case RegisterIndex.di:
-                        returnVal = register.ax;
+                        returnVal = register.di;
                         break;
                     case RegisterIndex.bp:
-                        returnVal = register.ax;
+                        returnVal = register.bp;
                         break;
                     case RegisterIndex.sp:
-                        returnVal = register.ax;
+                        returnVal = register.sp;
                         break;
                     case RegisterIndex.ip:
-                        returnVal = register.ax;
+                        returnVal = register.ip;
                         break;
                     default:
                         error.cpuError = CPUError.NotDefinedRegisterError;
@@ -245,15 +289,44 @@ public class MachineCode
             case CPUMode.RegisterToMemory:
             case CPUMode.MemoryOnly:
             case CPUMode.NumberToMemory:
-                if (isSourceMemoryIndexIsRegister)
+                if (isSourceMemoryIndexIsRegister || isDestMemoryIndexIsRegister)
                 {
-                    GetDataSource(register, memory, ref sourceMemoryIndex, error);
+                    switch (destRegister)
+                    {
+                        case RegisterIndex.ax:
+                            destMemoryIndex = register.ax;
+                            break;
+                        case RegisterIndex.bx:
+                            destMemoryIndex = register.bx;
+                            break;
+                        case RegisterIndex.cx:
+                            destMemoryIndex = register.cx;
+                            break;
+                        case RegisterIndex.dx:
+                            destMemoryIndex = register.dx;
+                            break;
+                        case RegisterIndex.si:
+                            destMemoryIndex = register.si;
+                            break;
+                        case RegisterIndex.di:
+                            destMemoryIndex = register.di;
+                            break;
+                        case RegisterIndex.bp:
+                            destMemoryIndex = register.bp;
+                            break;
+                        case RegisterIndex.sp:
+                            destMemoryIndex = register.sp;
+                            break;
+                        case RegisterIndex.ip:
+                            destMemoryIndex = register.ip;
+                            break;
+                        default:
+                            error.cpuError = CPUError.NotDefinedRegisterError;
+                            break;
+                    }
                 }
-                if (isDestMemoryIndexIsRegister)
-                {
-                    GetDataDest(register, memory, ref destMemoryIndex, error);
-                }
-                returnVal = memory.GetData(sourceMemoryIndex, error);
+
+                returnVal = memory.GetData(destMemoryIndex, error);
                 break;
             case CPUMode.NumberOnly:
             case CPUMode.RegisterToNumber:
@@ -280,28 +353,28 @@ public class MachineCode
                         returnVal = register.ax;
                         break;
                     case RegisterIndex.bx:
-                        returnVal = register.ax;
+                        returnVal = register.bx;
                         break;
                     case RegisterIndex.cx:
-                        returnVal = register.ax;
+                        returnVal = register.cx;
                         break;
                     case RegisterIndex.dx:
-                        returnVal = register.ax;
+                        returnVal = register.dx;
                         break;
                     case RegisterIndex.si:
-                        returnVal = register.ax;
+                        returnVal = register.si;
                         break;
                     case RegisterIndex.di:
-                        returnVal = register.ax;
+                        returnVal = register.di;
                         break;
                     case RegisterIndex.bp:
-                        returnVal = register.ax;
+                        returnVal = register.bp;
                         break;
                     case RegisterIndex.sp:
-                        returnVal = register.ax;
+                        returnVal = register.sp;
                         break;
                     case RegisterIndex.ip:
-                        returnVal = register.ax;
+                        returnVal = register.ip;
                         break;
                     default:
                         error.cpuError = CPUError.NotDefinedRegisterError;
@@ -311,6 +384,43 @@ public class MachineCode
             case CPUMode.MemoryToRegister:
             case CPUMode.MemoryToMemory:
             case CPUMode.MemoryOnly:
+                if (isSourceMemoryIndexIsRegister || isDestMemoryIndexIsRegister)
+                {
+                    switch (sourceRegister)
+                    {
+                        case RegisterIndex.ax:
+                            sourceMemoryIndex = register.ax;
+                            break;
+                        case RegisterIndex.bx:
+                            sourceMemoryIndex = register.bx;
+                            break;
+                        case RegisterIndex.cx:
+                            sourceMemoryIndex = register.cx;
+                            break;
+                        case RegisterIndex.dx:
+                            sourceMemoryIndex = register.dx;
+                            break;
+                        case RegisterIndex.si:
+                            sourceMemoryIndex = register.si;
+                            break;
+                        case RegisterIndex.di:
+                            sourceMemoryIndex = register.di;
+                            break;
+                        case RegisterIndex.bp:
+                            sourceMemoryIndex = register.bp;
+                            break;
+                        case RegisterIndex.sp:
+                            sourceMemoryIndex = register.sp;
+                            break;
+                        case RegisterIndex.ip:
+                            sourceMemoryIndex = register.ip;
+                            break;
+                        default:
+                            error.cpuError = CPUError.NotDefinedRegisterError;
+                            break;
+                    }
+                }
+
                 returnVal = memory.GetData(sourceMemoryIndex, error);
                 break;
             case CPUMode.NumberToMemory:
