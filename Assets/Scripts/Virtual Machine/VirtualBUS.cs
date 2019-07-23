@@ -48,4 +48,12 @@ public class VirtualBUS
 
         return returnVal;
     }
+
+    public void WriteBus(int size, int[] value)
+    {
+        if(size < pins.Count)
+        {
+            size = pins.Count;
+        }
+    }
 }

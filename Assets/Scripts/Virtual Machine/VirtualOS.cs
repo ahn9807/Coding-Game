@@ -81,6 +81,11 @@ public class VirtualOS : MonoBehaviour
         return hardware.AccessMemory(index);
     }
 
+    public void WriteMemroy(int index, int value)
+    {
+        hardware.WirteMemory(index, value);
+    }
+
     public void EndOS()
     {
         hardware.StopProcessing();

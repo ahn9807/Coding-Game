@@ -18,6 +18,11 @@ public class VirtualHardware : MonoBehaviour
         return memory.GetData(index, error);
     }
 
+    public void WirteMemory(int index, int value)
+    {
+        memory.SetData(index, value, error);
+    }
+
     public void SetVirtualHarware(Error error)
     {
         memory = new VirtualMemory(memoryCapacity);
