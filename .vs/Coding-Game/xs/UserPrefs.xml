@@ -1,0 +1,33 @@
+﻿<Properties StartupConfiguration="{2645C8B7-7F67-CFEA-5E3E-DDA6D47DFC80}|">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Applications/Sensor_Touch.cs">
+    <Files>
+      <File FileName="Assets/Scripts/Virtual Machine/VirtualHardware.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Virtual Machine/VirtualOS.cs" />
+      <File FileName="Assets/Scripts/Virtual Machine/VirtualMemory.cs" />
+      <File FileName="Assets/Scripts/Virtual Machine/VirtualCPU.cs" />
+      <File FileName="Assets/Scripts/Virtual Machine/VirtualBUS.cs" />
+      <File FileName="Assets/Scripts/Virtual Machine/Compiler.cs" />
+      <File FileName="Assets/Scripts/Virtual Machine/Architecture.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/Applications/VirtualApp.cs" Line="12" Column="25" />
+      <File FileName="Assets/Scripts/Applications/Sensor_Touch.cs" Line="1" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Coding-Game" expanded="True">
+            <Node name="Assets" expanded="True">
+              <Node name="Scripts" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="c7260cce-4dab-4240-9195-4fa8a277c864" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MultiItemStartupConfigurations />
+</Properties>
